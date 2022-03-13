@@ -37,6 +37,7 @@ public class BinaryTreeOnLinkedList {
 
         if (this.root == null) {
             this.root = newNode;
+            return;
         }
 
         Node parentNode = find(data);
@@ -50,41 +51,76 @@ public class BinaryTreeOnLinkedList {
         }
     }
 
-    public void remove(int data) {
-        //-- CASE 1
-        //-- Deleting a node with no children. Remove the node from the Tree.
-
-
-        //-- CASE 2
-        //-- Deleting a node with two children. Call the node to be deleted (N). Do not delete.
-        //-- Instead, choose either its inorder successor node or its inorder predecessor node (R).
-        //-- Copy the value of (R) to (N), then recursively call delete on (R) until reaching one of
-        //-- the first two cases. If we choose the inorder successor of a node, as the right subtree
-        //-- is not NULL, then its inorder successor is a node with the least value int its right subtree,
-        //-- which will have at a maximum of 1 subtree, so deleting it would fall in one of the first 2 cases.
-
-
-
-        //-- CASE 3
-        //-- Deleting a node with one child. Remove the node and replace it with its child.
-
-
-
-
-        //-- Find the placement of the Node being removed
-        Node removedNode = find(data);
-
-        //-- Find the node with value closest to the node being removed. Always leftNode, then rightNode.
-        //-- If leftNode does not have rightNode, then leftNode will be the closest value to oldParent.
-        Node newParent = removedNode.leftNode.rightNode;
-        if (newParent == null) {
-            newParent = removedNode.leftNode;
+    public boolean remove(int data) {
+        if (this.root == null){
+            System.out.println("Tree is empty");
+            return false;
         }
 
-        //-- Node wth the closest value to oldParent will then become the new parent.
-        newParent = newParent.parentNode;
-        removedNode = null;
+        Node pointer = find(data);
+        if (pointer == null) {
+            return false;
+        }
 
+        //-- CASE 1 - No children
+        if (pointer.isLeaf()) {
+            pointer = null;
+            return true;
+        }
+        //-- CASE 2 - One child
+        if (!pointer.isLeaf()) {
+            Node child = null;
+            if (pointer.leftNode == null) {
+                child = pointer.rightNode;
+                child.parentNode = pointer.parentNode;
+                pointer = null;
+                return true;
+            }
+            if (pointer.rightNode == null) {
+                child = pointer.leftNode;
+                child.parentNode = pointer.parentNode;
+                pointer = null;
+                return true;
+            }
+        }
+        //-- CASE 3 - Two children
+        if (pointer.leftNode != null && pointer.rightNode != null) {
+            //-- Go to right subtree and find minimum that is > pointer (inOrder successor)
+            Node successor = pointer;
+            successor = successor.rightNode;
+            while (successor.leftNode != null) {
+                successor = successor.leftNode;
+            }
+            //-- Here, pointer should equal the inOrder successor.
+            pointer = successor;
+            remove(successor.data);
+            return true;
+        }
+        return false;
+    }
+
+    public void in_order(Node root) {
+        if (root != null) {
+            in_order(root.leftNode);
+            System.out.print(root.data + " ");
+            in_order(root.rightNode);
+        }
+    }
+
+    public void pre_order(Node root) {
+        if (root != null) {
+            System.out.print(root.data + " ");
+            pre_order(root.leftNode);
+            pre_order(root.rightNode);
+        }
+    }
+
+    public void post_order(Node root) {
+        if (root != null) {
+            post_order(root.leftNode);
+            post_order(root.rightNode);
+            System.out.print(root.data + " ");
+        }
     }
 
     public Node get_root() {
@@ -104,5 +140,13 @@ class Node {
         this.leftNode = null;
         this.rightNode = null;
         this.parentNode = null;
+    }
+
+    public boolean isLeaf() {
+        return this.leftNode == null & this.rightNode == null;
+    }
+
+    public int get_value() {
+        return this.data;
     }
 }

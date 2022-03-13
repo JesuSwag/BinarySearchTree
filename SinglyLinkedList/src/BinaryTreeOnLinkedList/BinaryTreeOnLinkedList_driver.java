@@ -56,9 +56,6 @@ public class BinaryTreeOnLinkedList_driver
             assert (root.get_value() == 44);
 
             ///
-            assert (!binary_tree_ll.remove(100));
-
-            ///
             assert (binary_tree_ll.find(99).get_value() == 99);
             assert (binary_tree_ll.remove(99));
         }
@@ -77,12 +74,6 @@ public class BinaryTreeOnLinkedList_driver
         System.out.println("Pre-order traversal:");
         binary_tree_ll.post_order(binary_tree_ll.get_root());
         System.out.println("\n");
-
-        /// Print Tree nicely
-        System.out.println("Print the Tree (Pre-order mode):");
-        BinaryTreePrinter binary_tree_print = new BinaryTreePrinter();
-        binary_tree_print.print_tree(binary_tree_ll.get_root());
-        System.out.println("\n \n");
 
     }
 }
